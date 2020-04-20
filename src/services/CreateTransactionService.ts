@@ -13,8 +13,14 @@ class CreateTransactionService {
     this.transactionsRepository = transactionsRepository;
   }
 
-  public execute({ title, value, type}: Request):  Transaction {
+  public execute({ title, value, type }: Request): Transaction {
     // TODO
+    const { total } = this.transactionsRepository.getBalance();
+
+    if (type === 'outcome' && total < value) {
+      throw Error('Unavailable Balance')
+    }
+
     const transaction = this.transactionsRepository.create({
       title,
       value,
